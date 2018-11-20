@@ -10,29 +10,42 @@ using System.Net.Http;
 using System.Web.Http;
 namespace LMS.Controllers
 {
-    public class StudentController : ApiController
+	[Authorize]
+	public class StudentController : ApiController
     {
-
+		
 		private readonly IStudentManager _studentmanager;
+
 
 		public StudentController(IStudentManager studentmanager)
 		{
 			_studentmanager = studentmanager;
 		}
 
-		[HttpPost]
-		[Route("api/student/searchstudent")]
-		public IHttpActionResult Post(StudentSearchDto s)
+		[HttpGet]
+		[Route("api/student")]
+		public IHttpActionResult Get(string sortString = "id", string sortOrder = "asc", string searchValue = "", int pageSize = 10, int pageNumber = 1)
 		{
-			return Ok( _studentmanager.GetStudentByPage(s.StartId,s.MaxRecord,s.SearchString,s.Order,s.Flag));
+			SearchAttribute search = new SearchAttribute()
+			{
+				SearchValue = searchValue,
+				SortOrder = sortOrder,
+				SortString = sortString,
+				PageNumber = pageNumber,
+				PageSize = pageSize
+			};
+			StudentSearchDto students = _studentmanager.SearchStudent(search);
+
+			return Ok(students);
 		}
 
 
-		// GET: api/Student
-		public IHttpActionResult Get()
-        {
-			return Ok( _studentmanager.GetAllStudents());
-        }
+
+		//// GET: api/Student
+		//public IHttpActionResult Get()
+  //      {
+		//	return Ok( _studentmanager.GetAllStudents());
+  //      }
 
         // GET: api/Student/5
         public IHttpActionResult Get(int id)

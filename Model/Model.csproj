@@ -49,6 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Dtos\LecturerDto.cs" />
+    <Compile Include="Dtos\LecturerSearchDto.cs" />
+    <Compile Include="Dtos\SearchAttribute.cs" />
     <Compile Include="Dtos\StudentCourseDto.cs" />
     <Compile Include="Dtos\StudentSearchDto.cs" />
     <Compile Include="Dtos\StudentDto.cs" />

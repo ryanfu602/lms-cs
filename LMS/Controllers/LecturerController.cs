@@ -10,7 +10,8 @@ using System.Web.Http;
 
 namespace LMS.Controllers
 {
-    public class LecturerController : ApiController
+	[Authorize]
+	public class LecturerController : ApiController
     {
 		private readonly ILecturerManager _lecturermanager;
 
@@ -19,18 +20,22 @@ namespace LMS.Controllers
 			_lecturermanager = lecturermanager;
 		}
 
-		[HttpPost]
-		[Route("api/lecturer/searchlecturer")]
-		public IHttpActionResult Post(StudentSearchDto s)
-		{
-			return Ok(_lecturermanager.GetLecturerByPage(s.StartId, s.MaxRecord, s.SearchString, s.Order, s.Flag));
-		}
 
-
-		// GET: api/Student
-		public IHttpActionResult Get()
+		[HttpGet]
+		[Route("api/lecturer")]
+		public IHttpActionResult Get(string sortString = "id", string sortOrder = "asc", string searchValue = "", int pageSize = 10, int pageNumber = 1)
 		{
-			return Ok(_lecturermanager.GetAllLecturer());
+			SearchAttribute search = new SearchAttribute()
+			{
+				SearchValue = searchValue,
+				SortOrder = sortOrder,
+				SortString = sortString,
+				PageNumber = pageNumber,
+				PageSize = pageSize
+			};
+			LecturerSearchDto lecturer = _lecturermanager.SearchLecturer(search);
+
+			return Ok(lecturer);
 		}
 
 		// GET: api/Student/5

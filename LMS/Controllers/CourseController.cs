@@ -1,4 +1,5 @@
 ﻿using BL.Interfaces;
+using LMS.Filters;
 using Model.Dtos;
 using Model.Models;
 using System;
@@ -10,6 +11,7 @@ using System.Web.Http;
 
 namespace LMS.Controllers
 {
+	[Authorize]
 	public class CourseController : ApiController
 	{
 		private readonly ICourseManager _coursemanager;
@@ -19,15 +21,7 @@ namespace LMS.Controllers
 			_coursemanager = coursemanager;
 		}
 
-		[HttpPost]
-		[Route("api/course/searchcourse")]
-		public IHttpActionResult Post(StudentSearchDto s)
-		{
-			return Ok(_coursemanager.GetCourseByPage(s.StartId, s.MaxRecord, s.SearchString, s.Order, s.Flag));
-		}
 
-
-		// GET: api/Student
 		public IHttpActionResult Get()
 		{
 			return Ok(_coursemanager.GetAllCourse());

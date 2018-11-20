@@ -42,46 +42,113 @@ namespace BL.Managers
 			return Mapper.Map<Student, StudentDto>(_studentRepository.GetById(id));
 		}
 
-		public List<StudentDto> GetStudentByPage(int startid, int maxrecord, string str, string order,string flag)
+
+		public StudentSearchDto SearchStudent(SearchAttribute search)
 		{
-			if (startid <= 0)
+			if (search.PageNumber == 0)
 			{
-				startid = 1;
+				search.PageNumber = 1;
 			}
-
-			if (maxrecord <= 0)
+			if (search.PageSize == 0)
 			{
-				maxrecord = 10;
+				search.PageSize = 10;
 			}
-
-			var std = _studentRepository.Records.Where(x => x.FirstName.Contains(str) ||x.LastName.Contains(str) ||x.Email.Contains(str));
-
+			var std = _studentRepository.Records.Where(x => x.FirstName.Contains(search.SearchValue) || x.LastName.Contains(search.SearchValue) || x.Email.Contains(search.SearchValue));
+			var count = (search.PageNumber - 1) * search.PageSize;
+			var total = std.Count();
 			/* default by  id,asc*/
-			if (order == "name")
+		
+			if (search.SortString == "firstname")
 			{
-				if (flag == "desc")
+				if (search.SortOrder == "desc")
 				{
-					return Mapper.Map<List<Student>, List<StudentDto>>(std.OrderByDescending(x => x.FirstName).Skip(startid - 1).Take(maxrecord).ToList());
+				   std= std.OrderByDescending(x => x.FirstName).Skip(count).Take(search.PageSize);
 				}
-				return Mapper.Map<List<Student>, List<StudentDto>>(std.OrderBy(x => x.FirstName).Skip(startid - 1).Take(maxrecord).ToList());
+				else
+				{
+					std = std.OrderBy(x => x.FirstName).Skip(count).Take(search.PageSize);
+				}
 			}
-			else if (order == "email")
+			else if (search.SortString == "lastname")
 			{
-				if (flag == "desc")
+				if (search.SortOrder == "desc")
 				{
-					return Mapper.Map<List<Student>, List<StudentDto>>(std.OrderByDescending(x => x.Email).Skip(startid - 1).Take(maxrecord).ToList());
+					std = std.OrderByDescending(x => x.LastName).Skip(count).Take(search.PageSize);
 				}
-				return Mapper.Map<List<Student>, List<StudentDto>>(std.OrderBy(x => x.Email).Skip(startid - 1).Take(maxrecord).ToList());
+				else
+				{
+					std = std.OrderBy(x => x.LastName).Skip(count).Take(search.PageSize);
+				}
+			}
+			else if (search.SortString == "email")
+			{
+				if (search.SortOrder == "desc")
+				{
+					std = std.OrderByDescending(x => x.Email).Skip(count).Take(search.PageSize);
+				}
+				else
+				{
+					std = std.OrderBy(x => x.Email).Skip(count).Take(search.PageSize);
+				}				
+			}
+			else if (search.SortString == "dateofbirth")
+			{
+				if (search.SortOrder == "desc")
+				{
+					std = std.OrderByDescending(x => x.DateOfBirth).Skip(count).Take(search.PageSize);
+				}
+				else
+				{
+					std = std.OrderBy(x => x.DateOfBirth).Skip(count).Take(search.PageSize);
+				}
+			}
+			else if (search.SortString == "credit")
+			{
+				if (search.SortOrder == "desc")
+				{
+					std = std.OrderByDescending(x => x.Credit).Skip(count).Take(search.PageSize);
+				}
+				else
+				{
+					std = std.OrderBy(x => x.Credit).Skip(count).Take(search.PageSize);
+				}
+			}
+			else if (search.SortString == "gender")
+			{
+				if (search.SortOrder == "desc")
+				{
+					std = std.OrderByDescending(x => x.Gender).Skip(count).Take(search.PageSize);
+				}
+				else
+				{
+					std = std.OrderBy(x => x.Gender).Skip(count).Take(search.PageSize);
+				}
 			}
 			else
 			{
-				if (flag == "desc")
+				if (search.SortOrder == "desc")
 				{
-					return Mapper.Map<List<Student>, List<StudentDto>>(std.OrderByDescending(x => x.Id).Skip(startid - 1).Take(maxrecord).ToList());
+					std = std.OrderByDescending(x => x.Id).Skip(count).Take(search.PageSize);
 				}
-				return Mapper.Map<List<Student>, List<StudentDto>>(std.OrderBy(x => x.Id).Skip(startid - 1).Take(maxrecord).ToList());
+				else
+				{
+					std = std.OrderBy(x => x.Id).Skip(count).Take(search.PageSize);
+				}
 			}
+
+			var SearchResult = new StudentSearchDto
+			{
+				PageSize = search.PageSize,
+				TotalPage = total / search.PageSize + (total % search.PageSize == 0 ? 0 : 1),
+				TotalNum = total
+			};
+
+			SearchResult.PageNumber = search.PageNumber > SearchResult.TotalPage ? 1 : search.PageNumber;
+
+			SearchResult.Students = Mapper.Map<List<Student>, List<StudentDto>>(std.ToList());
+			return SearchResult;
 		}
+
 
 		public Student DeleteStudentById(int id)
 		{

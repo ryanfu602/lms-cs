@@ -1,5 +1,7 @@
-﻿using BL.Interfaces;
+﻿using AutoMapper;
+using BL.Interfaces;
 using Data.Repositories;
+using Model.Dtos;
 using Model.Models;
 using System;
 using System.Collections.Generic;
@@ -51,45 +53,88 @@ namespace BL.Managers
 			return _lecturerRepository.GetById(id);
 		}
 
-		public List<Lecturer> GetLecturerByPage(int startid, int maxrecord, string str, string order, string flag)
+		public LecturerSearchDto SearchLecturer(SearchAttribute search)
 		{
-			if (startid <= 0)
+			if (search.PageNumber == 0)
 			{
-				startid = 1;
+				search.PageNumber = 1;
 			}
-
-			if (maxrecord <= 0)
+			if (search.PageSize == 0)
 			{
-				maxrecord = 10;
+				search.PageSize = 10;
 			}
-
-			var lecturer = _lecturerRepository.Records.Where(x => x.Name.Contains(str) || x.StaffNumber.Contains(str) || x.Email.Contains(str));
-
+			var std = _lecturerRepository.Records.Where(x => x.Name.Contains(search.SearchValue) || x.StaffNumber.Contains(search.SearchValue) || x.Email.Contains(search.SearchValue));
+			var count = (search.PageNumber - 1) * search.PageSize;
+			var total = std.Count();
 			/* default by  id,asc*/
-			if (order == "name")
+
+			if (search.SortString == "name")
 			{
-				if (flag == "desc")
+				if (search.SortOrder == "desc")
 				{
-					return lecturer.OrderByDescending(x => x.Name).Skip(startid - 1).Take(maxrecord).ToList();
+					std = std.OrderByDescending(x => x.Name).Skip(count).Take(search.PageSize);
 				}
-				return lecturer.OrderBy(x => x.Name).Skip(startid - 1).Take(maxrecord).ToList();
+				else
+				{
+					std = std.OrderBy(x => x.Name).Skip(count).Take(search.PageSize);
+				}
 			}
-			else if (order == "language")
+			else if (search.SortString == "staffnumber")
 			{
-				if (flag == "desc")
+				if (search.SortOrder == "desc")
 				{
-					return lecturer.OrderByDescending(x => x.StaffNumber).Skip(startid - 1).Take(maxrecord).ToList();
+					std = std.OrderByDescending(x => x.StaffNumber).Skip(count).Take(search.PageSize);
 				}
-				return lecturer.OrderBy(x => x.StaffNumber).Skip(startid - 1).Take(maxrecord).ToList();
+				else
+				{
+					std = std.OrderBy(x => x.StaffNumber).Skip(count).Take(search.PageSize);
+				}
+			}
+			else if (search.SortString == "email")
+			{
+				if (search.SortOrder == "desc")
+				{
+					std = std.OrderByDescending(x => x.Email).Skip(count).Take(search.PageSize);
+				}
+				else
+				{
+					std = std.OrderBy(x => x.Email).Skip(count).Take(search.PageSize);
+				}
+			}
+			else if (search.SortString == "bibliography")
+			{
+				if (search.SortOrder == "desc")
+				{
+					std = std.OrderByDescending(x => x.Bibliography).Skip(count).Take(search.PageSize);
+				}
+				else
+				{
+					std = std.OrderBy(x => x.Bibliography).Skip(count).Take(search.PageSize);
+				}
 			}
 			else
 			{
-				if (flag == "desc")
+				if (search.SortOrder == "desc")
 				{
-					return lecturer.OrderByDescending(x => x.Id).Skip(startid - 1).Take(maxrecord).ToList();
+					std = std.OrderByDescending(x => x.Id).Skip(count).Take(search.PageSize);
 				}
-				return lecturer.OrderBy(x => x.Id).Skip(startid - 1).Take(maxrecord).ToList();
+				else
+				{
+					std = std.OrderBy(x => x.Id).Skip(count).Take(search.PageSize);
+				}
 			}
+
+			var SearchResult = new LecturerSearchDto
+			{
+				PageSize = search.PageSize,
+				TotalPage = total / search.PageSize + (total % search.PageSize == 0 ? 0 : 1),
+				TotalNum = total
+			};
+
+			SearchResult.PageNumber = search.PageNumber > SearchResult.TotalPage ? 1 : search.PageNumber;
+
+			SearchResult.Lecturers = Mapper.Map<List<Lecturer>, List<LecturerDto>>(std.ToList());
+			return SearchResult;
 		}
 
 		public Lecturer UpdateLecturerById(int id, Lecturer lecturer)

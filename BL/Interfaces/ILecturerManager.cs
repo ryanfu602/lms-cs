@@ -1,4 +1,5 @@
-﻿using Model.Models;
+﻿using Model.Dtos;
+using Model.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace BL.Interfaces
 
 		List<Lecturer> GetAllLecturer();
 
-		List<Lecturer> GetLecturerByPage(int startid, int maxrecord, string str, string order, string flag);
+		LecturerSearchDto SearchLecturer(SearchAttribute search);
 
 		Lecturer DeleteLecturerById(int id);
 

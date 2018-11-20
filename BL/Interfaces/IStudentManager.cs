@@ -16,7 +16,7 @@ namespace BL.Interfaces
 
 		List<StudentDto> GetAllStudents();
 
-		List<StudentDto> GetStudentByPage(int startid, int maxrecord, string str, string order, string flag);
+		StudentSearchDto SearchStudent(SearchAttribute search);
 
 		Student DeleteStudentById( int id );
 
