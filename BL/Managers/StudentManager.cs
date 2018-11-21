@@ -196,7 +196,33 @@ namespace BL.Managers
 				return null;
 			}
 
+			var count = _studentcourseRepository.GetByStudentCourseId(sc.StudentId, sc.CourseId);
+			if( count > 0 )
+			{
+				return null;
+			}
+
 			return (_studentcourseRepository.Add(sc));
+		}
+
+		public List<StudentCourse> GetStudentCourse(int id)
+		{
+
+			return _studentcourseRepository.GetStudentCourse(id);
+
+		}
+
+		public StudentCourse DeleteStudentCourse(int id)
+		{
+				var studentcourse = _studentcourseRepository.GetById(id);
+				if (studentcourse != null)
+				{
+				_studentcourseRepository.Delete(studentcourse);
+				}
+
+				return studentcourse;
+			
+
 		}
 	}
 }

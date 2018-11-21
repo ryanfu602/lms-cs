@@ -12,7 +12,17 @@ namespace Data.Repositories
 	{
 		public StudentCoursesRepository(LMSEntities context) : base(context)
 		{
+			
+		}
 
+		public int GetByStudentCourseId(int studentId, int courseId)
+		{
+			return Records.Where(x => x.StudentId == studentId && x.CourseId == courseId).Count();
+		}
+
+		public List<StudentCourse> GetStudentCourse(int id)
+		{
+			return Records.Where(x => x.StudentId == id).ToList();
 		}
 	}
 }

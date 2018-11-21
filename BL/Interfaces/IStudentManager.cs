@@ -24,6 +24,10 @@ namespace BL.Interfaces
 
 		StudentCourse CreateStudentCourse(StudentCourse studentcourse);
 
+		List<StudentCourse> GetStudentCourse(int id);
+
+		StudentCourse DeleteStudentCourse(int id);
+
 
 	}
 }

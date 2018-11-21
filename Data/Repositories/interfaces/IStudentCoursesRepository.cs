@@ -9,6 +9,7 @@ namespace Data.Repositories
 {
 	public interface IStudentCoursesRepository : IGenericRepository<StudentCourse>
 	{
-
+		int GetByStudentCourseId(int studentId, int courseId);
+		List<StudentCourse> GetStudentCourse(int id);
 	}
 }

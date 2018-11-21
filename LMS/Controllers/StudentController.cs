@@ -22,6 +22,7 @@ namespace LMS.Controllers
 			_studentmanager = studentmanager;
 		}
 
+
 		[HttpGet]
 		[Route("api/student")]
 		public IHttpActionResult Get(string sortString = "id", string sortOrder = "asc", string searchValue = "", int pageSize = 10, int pageNumber = 1)
@@ -43,12 +44,13 @@ namespace LMS.Controllers
 
 		//// GET: api/Student
 		//public IHttpActionResult Get()
-  //      {
+		//      {
 		//	return Ok( _studentmanager.GetAllStudents());
-  //      }
+		//      }
 
-        // GET: api/Student/5
-        public IHttpActionResult Get(int id)
+		// GET: api/Student/5
+
+		public IHttpActionResult Get(int id)
         {
 			var student = _studentmanager.GetStudentById(id);
 			
@@ -60,8 +62,10 @@ namespace LMS.Controllers
 			return Ok(student);
         }
 
-        // POST: api/Student
-        public IHttpActionResult Post(Student student)
+		// POST: api/Student
+		[HttpPost]
+		[Route("api/student")]
+		public IHttpActionResult Post(Student student)
         {
 
 			if (_studentmanager.CreateStudent(student) != null)
@@ -74,23 +78,6 @@ namespace LMS.Controllers
 			}
 			
         }
-
-
-		[HttpPost]
-		[Route("api/student/createstudentcourse")]
-		public IHttpActionResult Post(StudentCourse sc)
-		{
-
-			if (_studentmanager.CreateStudentCourse(sc) != null)
-			{
-				return Ok(sc);
-			}
-			else
-			{
-				return BadRequest("StudentCourse already exist");
-			}
-
-		}
 
 
 		// PUT: api/Student/5
@@ -117,5 +104,57 @@ namespace LMS.Controllers
 			}
 			return Ok();
         }
-    }
+
+
+		[HttpPost]
+		[Route("api/student/createstudentcourse")]
+		public IHttpActionResult Post(StudentCourse sc)
+		{
+
+			if (_studentmanager.CreateStudentCourse(sc) != null)
+			{
+				return Ok(sc);
+			}
+			else
+			{
+				return BadRequest("Student-Course already exist");
+			}
+
+		}
+
+
+		[HttpGet]
+		[Route("api/student/getstudentcourse")]
+		public IHttpActionResult Get(int studentid,string type)
+		{
+			var sc = _studentmanager.GetStudentCourse(studentid);
+			if ( sc != null)
+			{
+				return Ok(sc);
+			}
+			else
+			{
+				return BadRequest("Student-Course already exist");
+			}
+
+		}
+
+		[HttpDelete]
+		[Route("api/student/getstudentcourse")]
+		public IHttpActionResult Delete(int id, string type)
+		{
+			var sc = _studentmanager.DeleteStudentCourse(id);
+			if (sc != null)
+			{
+				return Ok(sc);
+			}
+			else
+			{
+				return BadRequest("StudentCourse not found");
+			}
+
+		}
+
+
+	}
 }
