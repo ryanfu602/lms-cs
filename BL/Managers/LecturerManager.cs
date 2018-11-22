@@ -14,10 +14,14 @@ namespace BL.Managers
 	public class LecturerManager : ILecturerManager
 	{
 		private ILecturerRepository _lecturerRepository;
+		private ICourseRepository _courseRepository;
+		private ILecturerCoursesRepository _lecturercourseRepository;
 
-		public LecturerManager(ILecturerRepository lecturerRepository)
+		public LecturerManager(ILecturerRepository lecturerRepository,ICourseRepository courseRepository, ILecturerCoursesRepository lecturercourseRepository)
 		{
 			_lecturerRepository = lecturerRepository;
+			_courseRepository = courseRepository;
+			_lecturercourseRepository = lecturercourseRepository;
 		}
 
 		public Lecturer CreateLecturer(Lecturer lecturer)
@@ -151,5 +155,55 @@ namespace BL.Managers
 			}
 			return let;
 		}
+
+
+		public List<Course> getLecturerCourseById(int id) {
+			var query = from c in _lecturerRepository.Context.Courses
+						join lc in _lecturerRepository.Context.LecturerCourses on c.Id equals lc.CourseId
+						where lc.LecturerId == id
+						select c;
+			return query.ToList();
+		}
+
+
+		public int CreateLecturerCourse(LecturerCourse lc)
+		{
+			var student = _lecturerRepository.GetById(lc.LecturerId);
+			if (student == null)
+			{
+				return 1;
+			}
+
+			var course = _courseRepository.GetById(lc.CourseId);
+			if (student == null)
+			{
+				return 2;
+			}
+
+			var count = _lecturercourseRepository.GetLecturerCourseNumber(lc.LecturerId, lc.CourseId);
+			if (count > 0)
+			{
+				return 3;
+			}
+
+
+			_lecturercourseRepository.Add(lc);
+			return 0;
+		}
+		public int DeleteLecturerCourseById(int lecturerId,int courseId)
+		{
+			var lecturercourse = _lecturercourseRepository.GetLecturerCourse(lecturerId, courseId);
+			if (lecturercourse != null)
+			{
+				_lecturercourseRepository.Delete(lecturercourse);
+			}
+			else {
+				return 1;
+			}
+
+			return 0;
+		}
+		
+
 	}
 }

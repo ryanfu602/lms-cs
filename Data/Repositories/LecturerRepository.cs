@@ -14,5 +14,6 @@ namespace Data.Repositories
 		{
 
 		}
+		public LMSEntities Context => _context;
 	}
 }

@@ -24,6 +24,11 @@ namespace Data.Repositories
 		{
 			return Records.Where(x => x.StudentId == id).ToList();
 		}
+
+		public int getStudentCourseNumber(int courseId)
+		{
+			return Records.Where(x => x.CourseId == courseId).Count();
+		}
 	}
 }
 

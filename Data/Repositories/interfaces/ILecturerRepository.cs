@@ -1,4 +1,5 @@
-﻿using Model.Models;
+﻿using Data.Database;
+using Model.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Data.Repositories
 {
 	public interface ILecturerRepository : IGenericRepository<Lecturer>
 	{
-
+		LMSEntities Context { get; }
 	}
 }

@@ -14,5 +14,21 @@ namespace Data.Repositories
 		{
 
 		}
+
+		public LecturerCourse getLecturerCourseById(int id)
+		{
+			return Records.FirstOrDefault(x => x.CourseId == id);
+		}
+
+		public LMSEntities Context => _context;
+
+		public int GetLecturerCourseNumber(int lecturerId, int courseId)
+		{
+			return Records.Where(x => x.LecturerId == lecturerId && x.CourseId == courseId).Count();
+		}
+		public LecturerCourse GetLecturerCourse(int lecturerId, int courseId)
+		{
+			return Records.FirstOrDefault(x => x.LecturerId == lecturerId && x.CourseId == courseId);
+		}
 	}
 }

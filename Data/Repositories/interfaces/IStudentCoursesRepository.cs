@@ -11,5 +11,6 @@ namespace Data.Repositories
 	{
 		int GetByStudentCourseId(int studentId, int courseId);
 		List<StudentCourse> GetStudentCourse(int id);
+		int getStudentCourseNumber(int courseId);
 	}
 }

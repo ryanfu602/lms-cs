@@ -22,7 +22,7 @@ namespace BL.Interfaces
 
 		Student ModifyStudentById(int id, Student student );
 
-		StudentCourse CreateStudentCourse(StudentCourse studentcourse);
+		int CreateStudentCourse(StudentCourse studentcourse);
 
 		List<StudentCourse> GetStudentCourse(int id);
 

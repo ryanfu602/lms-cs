@@ -21,5 +21,9 @@ namespace BL.Interfaces
 		Lecturer DeleteLecturerById(int id);
 
 		Lecturer UpdateLecturerById(int id, Lecturer lecturer);
+
+		List<Course> getLecturerCourseById(int id);
+		int CreateLecturerCourse( LecturerCourse lc);
+		int DeleteLecturerCourseById(int lecturerId, int courseId);
 	}
 }

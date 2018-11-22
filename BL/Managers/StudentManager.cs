@@ -182,27 +182,34 @@ namespace BL.Managers
 			return std;
 		}
 
-		public StudentCourse CreateStudentCourse(StudentCourse sc)
+		public int CreateStudentCourse(StudentCourse sc)
 		{
 			var student = _studentRepository.GetById(sc.StudentId);
 			if (student == null)
 			{
-				return null;
+				return 1;
 			}
 
 			var course = _courseRepository.GetById(sc.CourseId);
 			if(student == null)
 			{
-				return null;
+				return 2;
 			}
 
 			var count = _studentcourseRepository.GetByStudentCourseId(sc.StudentId, sc.CourseId);
 			if( count > 0 )
 			{
-				return null;
+				return 3;
 			}
 
-			return (_studentcourseRepository.Add(sc));
+			var courseNumber = _studentcourseRepository.getStudentCourseNumber(course.Id);
+
+			if (course.MaxStudent <= courseNumber) {
+				return 4; 
+			}
+
+			_studentcourseRepository.Add(sc);
+			return 0;
 		}
 
 		public List<StudentCourse> GetStudentCourse(int id)

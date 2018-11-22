@@ -110,15 +110,29 @@ namespace LMS.Controllers
 		[Route("api/student/createstudentcourse")]
 		public IHttpActionResult Post(StudentCourse sc)
 		{
-
-			if (_studentmanager.CreateStudentCourse(sc) != null)
+			var ret = _studentmanager.CreateStudentCourse(sc);
+			if (ret == 0)
 			{
-				return Ok(sc);
+				return Ok();
 			}
-			else
+			else if(ret == 1)
+			{
+				return BadRequest("StudentID does not existd");
+			}
+			else if( ret == 2)
+			{
+				return BadRequest("CourseID  does not existd");
+			}
+			else if( ret == 3)
 			{
 				return BadRequest("Student-Course already exist");
 			}
+			else if (ret == 4)
+			{
+				return BadRequest("The Maximum number of students to select this course");
+			}
+
+			return BadRequest("an unkown error");
 
 		}
 

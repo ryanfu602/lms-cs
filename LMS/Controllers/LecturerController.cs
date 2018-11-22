@@ -12,7 +12,7 @@ namespace LMS.Controllers
 {
 	[Authorize]
 	public class LecturerController : ApiController
-    {
+	{
 		private readonly ILecturerManager _lecturermanager;
 
 		public LecturerController(ILecturerManager lecturermanager)
@@ -88,5 +88,62 @@ namespace LMS.Controllers
 			}
 			return Ok(let);
 		}
+
+
+
+		[HttpPost]
+		[Route("api/lecturer/createlecturercourse")]
+		public IHttpActionResult Post(LecturerCourse lc)
+		{
+			var ret = _lecturermanager.CreateLecturerCourse(lc);
+			if (ret == 0)
+			{
+				return Ok();
+			}
+			else if (ret == 1)
+			{
+				return BadRequest("Lecturer does not existd");
+			}
+			else if (ret == 2)
+			{
+				return BadRequest("Course  does not existd");
+			}
+			else if (ret == 3)
+			{
+				return BadRequest("Only one course can be selectd");
+			}
+
+
+			return BadRequest("an unkown error");
+
+		}
+
+		[HttpDelete]
+		[Route("api/lecturer/deletelecturercourse")]
+		public IHttpActionResult Deletelc(int lecturerId,int courseId)
+		{
+			var lc = _lecturermanager.DeleteLecturerCourseById(lecturerId,courseId);
+			if (lc == 1)
+			{
+				return BadRequest("LecturerCourse does not existd");
+			}
+			return Ok();
+		}
+
+		[HttpGet]
+		[Route("api/lecturer/getlecturercourse")]
+		public IHttpActionResult Getlc(int lecturerId)
+		{
+			var lc = _lecturermanager.getLecturerCourseById(lecturerId);
+			if (lc != null)
+			{
+				return Ok(lc);
+			}
+			return NotFound();
+			
+		}
+
+
 	}
+	
 }
