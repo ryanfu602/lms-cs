@@ -50,6 +50,8 @@ namespace LMS.Controllers
 		}
 
 		// POST: 
+		[HttpPost]
+		[Route("api/lecturer")]
 		public IHttpActionResult Post(Lecturer lecturer)
 		{
 
